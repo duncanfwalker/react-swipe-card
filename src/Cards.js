@@ -2,6 +2,7 @@ import React, { Component, cloneElement } from 'react'
 import ReactDOM from 'react-dom'
 import { DIRECTIONS } from './utils'
 
+const remainingSpace = { top: 1, left: 1, right: 1, bottom: 1 };
 class SwipeCards extends Component {
   constructor (props) {
     super(props)
@@ -11,14 +12,15 @@ class SwipeCards extends Component {
       alertRight: false,
       alertTop: false,
       alertBottom: false,
-      containerSize: { x: 0, y: 0 }
+      containerSize: { x: 0, y: 0 },
+      remainingSpace: remainingSpace
     }
     this.removeCard = this.removeCard.bind(this)
     this.setSize = this.setSize.bind(this)
   }
   removeCard (side, cardId) {
     const { children, onEnd } = this.props
-    setTimeout(() => this.setState({ [`alert${side}`]: false }), 300)
+    setTimeout(() => this.setState({ [`alert${side}`]: false, remainingSpace }), 300)
     
     if (children.length === (this.state.index + 1) && onEnd) onEnd()
 
@@ -56,19 +58,25 @@ class SwipeCards extends Component {
         key: i,
         containerSize,
         index: children.length - index,
+        onPan: (remainingSpace) => this.setState({remainingSpace}),
         ...DIRECTIONS.reduce((m, d) => 
           ({ ...m, [`onOutScreen${d}`]: () => this.removeCard(d) }), {}),
         active: index === i
       }
       return [ cloneElement(c, props), ...memo ]
     }, [])
-    
+
     return (
       <div className={className}>
-        {DIRECTIONS.map(d => 
-          <div key={d} className={`${this.state[`alert${d}`] ? 'alert-visible': ''} alert-${d.toLowerCase()} alert`}>
-            {this.props[`alert${d}`]}
-          </div>
+        {DIRECTIONS.map(d => {
+            const alertRender = this.props[`alert${d}`];
+            if (typeof alertRender === 'function')
+              return alertRender({...this.state.remainingSpace, key: d });
+
+            return <div key={d} className={`${this.state[`alert${d}`]} alert-visible alert-${d.toLowerCase()} alert`}>
+              { (typeof alertRender === 'string') && alertRender}
+            </div>
+        }
         )}
         <div id='cards'>
           {_cards}

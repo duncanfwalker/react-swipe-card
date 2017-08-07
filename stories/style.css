@@ -76,7 +76,7 @@ h1, h2 {
 
 .alert-right {
   top: 0;
-  right: 0;
+  right: -45%;
   background: green;
   border-top-left-radius: 50px;
   border-bottom-left-radius: 50px;
@@ -84,24 +84,16 @@ h1, h2 {
 
 .alert-left {
   top: 0;
-  left: 0;
+  left: -45%;
   background: red;
   border-top-right-radius: 50px;
   border-bottom-right-radius: 50px;
 }
 
 .alert-top {
-  background: purple;
-  border-radius: 50px;
-  transform: translate(-50%, 0);
-  margin-left: 50%;
+  display: none;
  }
 
  .alert-bottom {
-  bottom: 0;
-  background: blue;
-  border-top-left-radius: 50px;
-  border-radius: 50px;
-  transform: translate(-50%, 0);
-  margin-left: 50%;
+   display: none;
  }

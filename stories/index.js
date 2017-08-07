@@ -5,8 +5,18 @@ import './style.css'
 
 const data = ['Alexandre', 'Thomas', 'Lucien']
 
-const CustomAlertLeft = () => <span>Nop</span>
-const CustomAlertRight = () => <span>Ok</span>
+const customAlertLeft = ({left, right}) => <div
+  className="alertLeft alert-visible alert-left alert"
+  style={{transform: `translateX(${(Math.min(1- left, 1)*100)}%)`}}>
+  No
+</div>
+
+const customAlertRight = ({left, right}) =>  <div
+  className="alertRight alert-visible alert-right alert"
+  style={{transform: `translateX(${(-Math.min(1 - right, 1)*100)}%)`}}>
+  Yes
+</div>
+
 
 storiesOf('Tinder card', module)
   .add('simple', () => (
@@ -28,8 +38,8 @@ storiesOf('Tinder card', module)
     <div>
       <h1>react swipe card</h1>
       <Cards
-        alertRight={<CustomAlertRight />} 
-        alertLeft={<CustomAlertLeft />} 
+        alertRight={customAlertRight}
+        alertLeft={customAlertLeft}
         onEnd={action('end')}
         className='master-root'>
         {data.map((item, key) => 

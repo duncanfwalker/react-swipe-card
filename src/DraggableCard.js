@@ -19,19 +19,25 @@ class DraggableCard extends Component {
     this.handlePan = this.handlePan.bind(this)
   }
   resetPosition () {
-    const { x, y } = this.props.containerSize
+    const containerSize = this.props.containerSize
     const card = ReactDOM.findDOMNode(this)
+    const cardSize = {
+      x: card.offsetWidth,
+      y: card.offsetHeight,
+    }
 
     const initialPosition = {
-      x: Math.round((x - card.offsetWidth) / 2),
-      y: Math.round((y - card.offsetHeight) / 2)
+      x: Math.round((containerSize.x - cardSize.x) / 2),
+      y: Math.round((containerSize.y - cardSize.y) / 2)
     }
 
     this.setState({
       x: initialPosition.x,
       y: initialPosition.y,
       initialPosition: initialPosition,
-      startPosition: { x: 0, y: 0 }
+      startPosition: { x: 0, y: 0 },
+      containerSize,
+      cardSize
     })
   }
   
@@ -69,7 +75,9 @@ class DraggableCard extends Component {
   }
   panmove (ev) {
     this.setState(this.calculatePosition( ev.deltaX, ev.deltaY ))
+    this.props.onPan(this.calculateSpace())
   }
+
   pancancel (ev) {
     console.log(ev.type)
   }
@@ -82,6 +90,17 @@ class DraggableCard extends Component {
 
   handleSwipe (ev) {
     console.log(ev.type)
+  }
+
+  calculateSpace() {
+    const {x, y, containerSize, cardSize} = this.state
+
+    const xMargin = (containerSize.x - cardSize.x);
+    const yMargin = (containerSize.y - cardSize.y);
+    return {
+      left: ((x / xMargin) * 2 ), right: (((xMargin - x) / xMargin) * 2) ,
+      top: ((y / yMargin) * 2), bottom: ((yMargin - y) / yMargin * 2)
+    }
   }
 
   calculatePosition (deltaX, deltaY) {
